@@ -1,9 +1,11 @@
 # stocknumbers
+
 Uses Python 3.
 This python script will scrape through adidas.com or any website that uses demandware, and check the stock and available sizes of any SKU available on the website.
 
 Steps to run:
-1. Install requirements.txt
+
+1. pip install requirements.txt
 2. Insert the SKU of the product you would like to check stock on, or a product that is scheduled to release on the website soon. Ex: "GM7319" from https://www.adidas.com/us/tiro-21-track-jacket/GM7319.html
 3. Insert the site you would like to scrape. Ex: "adidas"
 4. Run the script.
