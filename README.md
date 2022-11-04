@@ -1,7 +1,8 @@
 # stocknumbers
 
-Uses Python 3.
 This python script will scrape through adidas.com or any website that uses demandware, and check the stock and available sizes of any SKU available on the website.
+
+Uses Python3
 
 Steps to run:
 
