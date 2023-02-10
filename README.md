@@ -7,7 +7,7 @@ Uses Python3
 Steps to run:
 
 1. pip install requirements.txt
-2. Insert the SKU of the product you would like to check stock on, or a product that is scheduled to release on the website soon. Ex: "GM7319" from https://www.adidas.com/us/tiro-21-track-jacket/GM7319.html
+2. Insert the SKU of the product you would like to check stock on, or a product that is scheduled to release on the website soon. Ex: "GX9158" from https://www.adidas.com/us/ultraboost-22-running-shoes/GX9158.html
 3. Insert the site you would like to scrape. Ex: "adidas"
 4. Run the script.
 5. The script will continue to run until it is manually closed via key input: control+c, as it was designed to monitor live releases on the website over an extended period of time.
