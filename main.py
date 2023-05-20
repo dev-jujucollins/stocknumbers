@@ -1,11 +1,10 @@
-import cloudscraper  # bypasses cloudflare anti-bot measures
+import cloudscraper  # bypasses cloudflare measures
 import atexit
 import json
 import time
-import os
 
-product_sku = "GM7319"  # insert product sku here
-site = "adidas"  # demandwares site (such as adidas)
+product_sku = "B75806"  # insert product sku here
+site = "adidas"  # demandwares site (such as adidas.com)
 target_site = (
     "https://www."
     + str(site).lower()
@@ -29,14 +28,14 @@ def start_scan():
     while True:
         text = scraper.get(target_site).text
 
-        if "security issue" in text:
+        if "security issue" in text:  # if the ip is banned
             print("\n")
             print("=====================================")
             print("Session has been forbidden on this ip")
             print("=====================================")
             print("\n")
 
-        elif "<title>" in text:
+        elif "<title>" in text:  # if the ip is rate limited
             print("\n")
             print("=============================")
             print("Session has been rate limited")
@@ -48,7 +47,7 @@ def start_scan():
         else:
             json_message = json.loads(text)
 
-            if "message" in json_message:
+            if "message" in json_message:  # if the product is not found
                 # Once the release is done save data and exit
                 if live:
                     live = False
@@ -58,7 +57,7 @@ def start_scan():
                 print("The product for SKU " + product_sku + " was not found.")
                 print("\n")
 
-            elif "id" in json_message:
+            elif "id" in json_message:  # if the product is found
                 sku = json_message["id"]
                 status = json_message["availability_status"]
 
@@ -66,7 +65,7 @@ def start_scan():
                 print("SKU: " + sku)
                 print("Availability: " + status)
 
-                if status == "IN_STOCK":
+                if status == "IN_STOCK":  # if the product is in stock
                     live = True
                     sizes_in_stock = ""
 
@@ -78,7 +77,7 @@ def start_scan():
                         if stock_amount_int > 0:
                             sizes_in_stock += size + ", "
 
-                        if size not in loaded_sizes:
+                        if size not in loaded_sizes:  # if the size is not loaded
                             print(" ")
                             print("   Size: " + size)
                             print("   Available: " + stock_amount_string)
@@ -89,7 +88,7 @@ def start_scan():
                         else:
                             previous_stock = loaded_sizes[size]
 
-                            if previous_stock != stock_amount_int:
+                            if previous_stock != stock_amount_int:  # if stock changed
                                 if stock_amount_int > previous_stock:
                                     total_stock[size] = total_stock[size] + (
                                         stock_amount_int - previous_stock
@@ -107,8 +106,9 @@ def start_scan():
                                 loaded_sizes[size] = stock_amount_int
                     if sizes_in_stock != "":
                         print("Available sizes: " + sizes_in_stock[:-2])
+                        # removes the last comma and space
 
-        time.sleep(refresh_rate_seconds)
+        time.sleep(refresh_rate_seconds)  # refreshes every 15 seconds
 
 
 def save_data():
