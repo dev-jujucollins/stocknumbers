@@ -1,10 +1,11 @@
-import cloudscraper  # bypasses cloudflare measures
+import requests
 import atexit
 import json
 import time
+from config import proxy_credendtials as pc
 
-product_sku = "B75806"  # insert product sku here
-site = "adidas"  # demandwares site (such as adidas.com)
+product_sku = "HQ4202"  # Insert product sku here | https://www.adidas.com/us/ultraboost-1.0-shoes/HQ4202
+site = "adidas"  # Demandware site (such as adidas.com) 
 target_site = (
     "https://www."
     + str(site).lower()
@@ -14,7 +15,7 @@ target_site = (
 )
 print(target_site)
 timeout_retry_seconds = 180
-refresh_rate_seconds = 15  # it will refresh with updated stock number every 15 seconds
+refresh_rate_seconds = 15  # It will refresh with updated stock number every 15 seconds
 total_stock = {}
 loaded_sizes = {}
 
@@ -22,20 +23,25 @@ loaded_sizes = {}
 def start_scan():
     atexit.register(save_data)
 
-    scraper = cloudscraper.create_scraper()
+    # Importing proxy credentials from config.py
+    proxy = pc
+    proxies = {"http": proxy, "https": proxy}
+    r = requests.get(target_site, proxies=proxies, verify=False)
+    print(r.text)
+
     live = False
 
     while True:
-        text = scraper.get(target_site).text
+        text = r.text
 
-        if "security issue" in text:  # if the ip is banned
+        if "security issue" in text:  # If the IP is banned
             print("\n")
             print("=====================================")
-            print("Session has been forbidden on this ip")
+            print("Session has been forbidden on this IP")
             print("=====================================")
             print("\n")
 
-        elif "<title>" in text:  # if the ip is rate limited
+        elif "<title>" in text:  # If the ip is rate limited
             print("\n")
             print("=============================")
             print("Session has been rate limited")
@@ -47,7 +53,7 @@ def start_scan():
         else:
             json_message = json.loads(text)
 
-            if "message" in json_message:  # if the product is not found
+            if "message" in json_message:  # If the product is not found
                 # Once the release is done save data and exit
                 if live:
                     live = False
@@ -57,7 +63,7 @@ def start_scan():
                 print("The product for SKU " + product_sku + " was not found.")
                 print("\n")
 
-            elif "id" in json_message:  # if the product is found
+            elif "id" in json_message:  # If the product is found
                 sku = json_message["id"]
                 status = json_message["availability_status"]
 
@@ -65,7 +71,7 @@ def start_scan():
                 print("SKU: " + sku)
                 print("Availability: " + status)
 
-                if status == "IN_STOCK":  # if the product is in stock
+                if status == "IN_STOCK":  # If the product is in stock
                     live = True
                     sizes_in_stock = ""
 
@@ -77,7 +83,7 @@ def start_scan():
                         if stock_amount_int > 0:
                             sizes_in_stock += size + ", "
 
-                        if size not in loaded_sizes:  # if the size is not loaded
+                        if size not in loaded_sizes:  # If the size is not loaded
                             print(" ")
                             print("   Size: " + size)
                             print("   Available: " + stock_amount_string)
@@ -88,7 +94,7 @@ def start_scan():
                         else:
                             previous_stock = loaded_sizes[size]
 
-                            if previous_stock != stock_amount_int:  # if stock changed
+                            if previous_stock != stock_amount_int:  # If stock changed
                                 if stock_amount_int > previous_stock:
                                     total_stock[size] = total_stock[size] + (
                                         stock_amount_int - previous_stock
@@ -106,9 +112,9 @@ def start_scan():
                                 loaded_sizes[size] = stock_amount_int
                     if sizes_in_stock != "":
                         print("Available sizes: " + sizes_in_stock[:-2])
-                        # removes the last comma and space
+                        # Removes the last comma and space
 
-        time.sleep(refresh_rate_seconds)  # refreshes every 15 seconds
+        time.sleep(refresh_rate_seconds)  # Refreshes every 15 seconds
 
 
 def save_data():
@@ -117,7 +123,7 @@ def save_data():
             "total_stock" + "_" + str(product_sku) + ".json", "w"
         ) as total_stock_file:
             json.dump(total_stock, total_stock_file, sort_keys=True, indent=4)
-        # saves the stock numbers for each size in a json file within the same directory
+        # Saves the stock numbers for each size in a json file within the same directory
 
         print("Saved the total stock to total_stock_" + str(product_sku) + ".json")
     else:
