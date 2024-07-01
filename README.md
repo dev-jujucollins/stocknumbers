@@ -7,7 +7,7 @@ Uses Python3
 Steps to run:
 
 1. pip install requirements.txt
-2. On line 7, insert the SKU of the product you would like to check stock on, or a product that is scheduled to release on the website soon. Ex: "B75806" from https://www.adidas.com/us/samba-og-shoes/B75806.html
+2. On line 7, insert the SKU of the product you would like to check stock on, or a product that is scheduled to release on the website soon. Ex: "HQ4202" from https://www.adidas.com/us/ultraboost-1.0-shoes/HQ4202.html
 3. On line 8, insert the demandware site you would like to scrape. Ex: "adidas"
 4. In config.py, it is highly recommended that you use a proxy to protect your IP address from being banned on the site. If a proxy is not used, it's likely that your IP will be banned almost immediately.
 4. Run the script.
