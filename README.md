@@ -11,7 +11,7 @@ Steps to run:
 3. On line 8, insert the demandware site you would like to scrape. Ex: "adidas"
 4. In config.py, it is highly recommended that you use a proxy to protect your IP address from being banned on the site. If a proxy is not used, it's likely that your IP will be banned almost immediately.
 4. Run the script.
-5. The script will continue to run until it is manually closed via key input: control+c, as it was designed to monitor live releases on the website over an extended period of time.
+5. The script will continue to run until it is manually stopped via keyboard interrupt (input: control+c), as it was designed to monitor live releases on the website over an extended period of time.
 6. Once the script is stopped, if it detected that stock was loaded for the product SKU that was provided, it will create json file within the same directory with the stock numbers of each size of the product SKU that was being monitored. If no stock was loaded or available, it will not create the json file, as there's no information it would need to add.
 
 EX:
